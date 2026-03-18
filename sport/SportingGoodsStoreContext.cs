@@ -91,16 +91,16 @@ public partial class SportingGoodsStoreContext : DbContext
             entity.Property(e => e.IdUser).HasColumnName("id_user");
             entity.Property(e => e.OrderDate).HasColumnName("order_date");
 
-            entity.HasOne(d => d.IdDeliveryPointAddressNavigation).WithMany(p => p.Orders)
+            entity.HasOne(d => d.AddressesOfPickUpPoint).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.IdDeliveryPointAddress)
                 .HasConstraintName("fk_orders_addresses_of_pick-up_points");
 
-            entity.HasOne(d => d.IdStatusNavigation).WithMany(p => p.Orders)
+            entity.HasOne(d => d.Status).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.IdStatus)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_orders_statuses");
 
-            entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.Orders)
+            entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.IdUser)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_orders_users");
@@ -158,22 +158,22 @@ public partial class SportingGoodsStoreContext : DbContext
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.QuantityInStock).HasColumnName("quantity_in_stock");
 
-            entity.HasOne(d => d.IdCategoryNavigation).WithMany(p => p.SportingGoods)
+            entity.HasOne(d => d.Category).WithMany(p => p.SportingGoods)
                 .HasForeignKey(d => d.IdCategory)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_sporting_goods_categories");
 
-            entity.HasOne(d => d.IdManufacturerNavigation).WithMany(p => p.SportingGoods)
+            entity.HasOne(d => d.Manufacturer).WithMany(p => p.SportingGoods)
                 .HasForeignKey(d => d.IdManufacturer)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_sporting_goods_manufacturers");
 
-            entity.HasOne(d => d.IdSupplierNavigation).WithMany(p => p.SportingGoods)
+            entity.HasOne(d => d.Supplier).WithMany(p => p.SportingGoods)
                 .HasForeignKey(d => d.IdSupplier)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_sporting_goods_suppliers");
 
-            entity.HasOne(d => d.IdUnitOfMeasurementNavigation).WithMany(p => p.SportingGoods)
+            entity.HasOne(d => d.UnitsOfMeasurement).WithMany(p => p.SportingGoods)
                 .HasForeignKey(d => d.IdUnitOfMeasurement)
                 .HasConstraintName("fk_sporting_goods_units of measurement");
         });

@@ -27,13 +27,13 @@ public partial class SportingGood
 
     public string? Description { get; set; }
 
-    public virtual Category IdCategoryNavigation { get; set; } = null!;
+    public virtual Category Category { get; set; } = null!;
 
-    public virtual Manufacturer IdManufacturerNavigation { get; set; } = null!;
+    public virtual Manufacturer Manufacturer { get; set; } = null!;
 
-    public virtual Supplier IdSupplierNavigation { get; set; } = null!;
+    public virtual Supplier Supplier { get; set; } = null!;
 
-    public virtual UnitsOfMeasurement? IdUnitOfMeasurementNavigation { get; set; }
+    public virtual UnitsOfMeasurement? UnitsOfMeasurement { get; set; }
 
     public virtual ICollection<OrdersSportingGood> OrdersSportingGoods { get; set; } = new List<OrdersSportingGood>();
 }
