@@ -23,12 +23,6 @@ namespace sport
             dgvProducts.AutoGenerateColumns = false;
             dgvProducts.RowHeadersVisible = false;
 
-            var colPhoto = new DataGridViewImageColumn();
-            colPhoto.Name = "colPhoto";
-            colPhoto.ImageLayout = DataGridViewImageCellLayout.Zoom;
-            colPhoto.Width = 200;
-            colPhoto.FillWeight = 15;
-
             var colInfoProduct = new DataGridViewTextBoxColumn();
             colInfoProduct.Name = "colInfoProduct";
             colInfoProduct.FillWeight = 30;
@@ -58,7 +52,6 @@ namespace sport
             colInfoDiscount.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvProducts.Columns.AddRange(
-                colPhoto,
                 colInfoProduct,
                 colInfoSupAndMan,
                 colOldPrice,     
@@ -113,7 +106,7 @@ namespace sport
                     {
                         int rowIndex = dgvProducts.Rows.Add();
                         var row = dgvProducts.Rows[rowIndex];
-                        row.Cells["colPhoto"].Value = LoadProductImage(product.PhotoUrl);
+                        //row.Cells["colPhoto"].Value = LoadProductImage(product.PhotoUrl);
                         row.Cells["colInfoProduct"].Value = FormatProductInfo(product);
                         row.Cells["colInfoSupAndMan"].Value = FormatSupAndMan(product);
 
@@ -144,16 +137,6 @@ namespace sport
                 MessageBox.Show($"Ошибка загрузки: {ex.Message}", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private Image LoadProductImage(string photoUrl)
-        {
-            if (!String.IsNullOrEmpty(photoUrl) && System.IO.File.Exists(photoUrl))
-            {
-                return Image.FromFile(photoUrl);
-            }
-
-            return Resources.picture;
         }
 
         private void ApplyRowStyles(DataGridViewRow row, SportingGood product)
