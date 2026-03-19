@@ -157,6 +157,7 @@ public partial class SportingGoodsStoreContext : DbContext
             entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.QuantityInStock).HasColumnName("quantity_in_stock");
+            entity.Property(e => e.AddPhotoUrlToSportingGoods).HasColumnName("photo_url");
 
             entity.HasOne(d => d.Category).WithMany(p => p.SportingGoods)
                 .HasForeignKey(d => d.IdCategory)

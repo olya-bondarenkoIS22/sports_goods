@@ -27,6 +27,8 @@ public partial class SportingGood
 
     public string? Description { get; set; }
 
+    public string? AddPhotoUrlToSportingGoods { get; set; }
+
     public virtual Category Category { get; set; } = null!;
 
     public virtual Manufacturer Manufacturer { get; set; } = null!;
