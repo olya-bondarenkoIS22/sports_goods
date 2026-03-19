@@ -53,7 +53,7 @@
             // 
             // bttnGuest
             // 
-            bttnGuest.BackColor = Color.FromArgb(67, 97, 238);
+            bttnGuest.BackColor = Color.FromArgb(233, 245, 255);
             bttnGuest.FlatStyle = FlatStyle.Flat;
             bttnGuest.Font = new Font("Times New Roman", 9F, FontStyle.Regular, GraphicsUnit.Point, 204);
             bttnGuest.Location = new Point(92, 174);
@@ -66,7 +66,7 @@
             // 
             // bttnLogin
             // 
-            bttnLogin.BackColor = Color.FromArgb(233, 245, 255);
+            bttnLogin.BackColor = Color.FromArgb(67, 97, 238);
             bttnLogin.FlatStyle = FlatStyle.Flat;
             bttnLogin.Location = new Point(92, 139);
             bttnLogin.Name = "bttnLogin";

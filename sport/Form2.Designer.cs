@@ -59,7 +59,7 @@
             bttnOrders.Name = "bttnOrders";
             bttnOrders.Size = new Size(194, 40);
             bttnOrders.TabIndex = 9;
-            bttnOrders.Text = "Посмотреть товары";
+            bttnOrders.Text = "Посмотреть заказы";
             bttnOrders.UseVisualStyleBackColor = false;
             bttnOrders.Click += BttnOrders_Click;
             // 

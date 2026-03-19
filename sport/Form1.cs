@@ -40,7 +40,10 @@ namespace sport
                 }
             }
         }
-
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+        }
         private void BttnGuest_Click(object sender, EventArgs e)
         {
             CurrentUser = null;

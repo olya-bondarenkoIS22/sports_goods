@@ -18,6 +18,10 @@ namespace sport
         public Form3(Models.User user, bool quest)
         {
             InitializeComponent();
+
+            dgvOrders.AutoGenerateColumns = false;
+            dgvOrders.RowHeadersVisible = false;
+
             dgvOrders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
             var colDate = new DataGridViewTextBoxColumn();
@@ -44,6 +48,15 @@ namespace sport
            [
                colDate, colUserDelivery, colCode, colStatus
            ]);
+
+            dgvOrders.EnableHeadersVisualStyles = false;
+            dgvOrders.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control;
+            dgvOrders.ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.ControlText;
+            dgvOrders.ColumnHeadersDefaultCellStyle.Font = new Font(dgvOrders.Font, FontStyle.Bold);
+            dgvOrders.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvOrders.ColumnHeadersDefaultCellStyle.SelectionBackColor = SystemColors.Control;
+            dgvOrders.ColumnHeadersDefaultCellStyle.SelectionForeColor = SystemColors.ControlText;
 
             CurrentUser = user;
             IsGuest = quest;
@@ -87,8 +100,9 @@ namespace sport
                         row.Cells["colStatus"].Value = $"{order.Status.Status1}";
                         row.Cells["colStatus"].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+                        ApplyRowStyles(row, order);
                     }
-
+                    
                     dgvOrders.ResumeLayout();
                     dgvOrders.AutoResizeRows(DataGridViewAutoSizeRowsMode.AllCells);
                 }
@@ -98,6 +112,28 @@ namespace sport
                 MessageBox.Show($"Ошибка загрузки: {ex.Message}", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ApplyRowStyles(DataGridViewRow row, Order order)
+        {
+            var statusCell = row.Cells["colStatus"];
+
+            if (order.Status.Status1 == "Новый")
+            {
+                statusCell.Style.ForeColor = Color.Green;
+                statusCell.Style.Font = new Font(dgvOrders.Font, FontStyle.Bold);
+            }
+            else if (order.Status.Status1 == "Доставляется")
+            {
+                statusCell.Style.ForeColor = ColorTranslator.FromHtml("#4361EE");
+                statusCell.Style.Font = new Font(dgvOrders.Font, FontStyle.Regular);
+            }
+            else if (order.Status.Status1 == "Завершен")
+            {
+                statusCell.Style.ForeColor = Color.Red;
+                statusCell.Style.Font = new Font(dgvOrders.Font, FontStyle.Regular);
+            }
+
         }
 
         private static string FormatUserDelivery(Order order)

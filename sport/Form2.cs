@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Dynamic;
+using System.Resources;
 using System.Text;
 using System.Windows.Forms;
 
@@ -19,14 +20,23 @@ namespace sport
         {
             InitializeComponent();
 
+            dgvProducts.AutoGenerateColumns = false;
+            dgvProducts.RowHeadersVisible = false;
+
+            var colPhoto = new DataGridViewImageColumn();
+            colPhoto.Name = "colPhoto";
+            colPhoto.ImageLayout = DataGridViewImageCellLayout.Zoom;
+            colPhoto.Width = 200;
+            colPhoto.FillWeight = 15;
+
             var colInfoProduct = new DataGridViewTextBoxColumn();
             colInfoProduct.Name = "colInfoProduct";
-            colInfoProduct.FillWeight = 35;
+            colInfoProduct.FillWeight = 30;
             colInfoProduct.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
             var colInfoSupAndMan = new DataGridViewTextBoxColumn();
             colInfoSupAndMan.Name = "colInfoSupAndMan";
-            colInfoSupAndMan.FillWeight = 35;
+            colInfoSupAndMan.FillWeight = 25;
             colInfoSupAndMan.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
             var colOldPrice = new DataGridViewTextBoxColumn();
@@ -48,12 +58,22 @@ namespace sport
             colInfoDiscount.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvProducts.Columns.AddRange(
+                colPhoto,
                 colInfoProduct,
                 colInfoSupAndMan,
                 colOldPrice,     
                 colNewPrice,     
                 colInfoDiscount
             );
+
+            dgvProducts.EnableHeadersVisualStyles = false;
+            dgvProducts.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control;
+            dgvProducts.ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.ControlText;
+            dgvProducts.ColumnHeadersDefaultCellStyle.Font = new Font(dgvProducts.Font, FontStyle.Bold);
+            dgvProducts.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvProducts.ColumnHeadersDefaultCellStyle.SelectionBackColor = SystemColors.Control;
+            dgvProducts.ColumnHeadersDefaultCellStyle.SelectionForeColor = SystemColors.ControlText;
 
             CurrentUser = user;
             IsGuest = quest;
@@ -93,7 +113,7 @@ namespace sport
                     {
                         int rowIndex = dgvProducts.Rows.Add();
                         var row = dgvProducts.Rows[rowIndex];
-
+                        row.Cells["colPhoto"].Value = LoadProductImage(product.PhotoUrl);
                         row.Cells["colInfoProduct"].Value = FormatProductInfo(product);
                         row.Cells["colInfoSupAndMan"].Value = FormatSupAndMan(product);
 
@@ -124,6 +144,16 @@ namespace sport
                 MessageBox.Show($"Ошибка загрузки: {ex.Message}", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private Image LoadProductImage(string photoUrl)
+        {
+            if (!String.IsNullOrEmpty(photoUrl) && System.IO.File.Exists(photoUrl))
+            {
+                return Image.FromFile(photoUrl);
+            }
+
+            return Resources.picture;
         }
 
         private void ApplyRowStyles(DataGridViewRow row, SportingGood product)
