@@ -69,6 +69,9 @@ namespace sport
             if (IsGuest)
             {
                 bttnOrders.Visible = false;
+                btnCreate.Visible = false;
+                btnUpdate.Visible = false;
+                btnDelete.Visible = false;
             }
             lblUserName.Text = IsGuest ? "Гость" : CurrentUser.FullName;
 
@@ -252,6 +255,11 @@ namespace sport
                 Form3 ordersForm = new Form3(CurrentUser, IsGuest);
                 ordersForm.ShowDialog();
             }
+        }
+
+        private void BtnCreate_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
