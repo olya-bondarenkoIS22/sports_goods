@@ -17,6 +17,9 @@ namespace sport
     {
         public Models.User CurrentUser { get; private set; }
         public bool IsGuest { get; private set; }
+
+        private SportingGood selectedGood;
+
         public Form2(Models.User user, bool quest)
         {
             InitializeComponent();
@@ -78,10 +81,69 @@ namespace sport
             dgvProducts.Columns["colPhoto"].HeaderText = "Изображение";
             dgvProducts.Columns["colInfoProduct"].HeaderText = "Товар";
             dgvProducts.Columns["colInfoDiscount"].HeaderText = "Скидка";
-
+            ConfigureDgvProducts();
             LoadProducts();
         }
 
+        private void LoadRole()
+        {
+            using (var db = new SportingGoodsStoreContext())
+            {
+
+            }
+        }
+        private void ConfigureDgvProducts()
+        {
+            // Настройка выделения строк
+            dgvProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvProducts.MultiSelect = false;
+
+            // Добавляем обработчики для выделения строки при клике
+            //dgvProducts.CellClick += DgvProducts_CellClick;
+            dgvProducts.SelectionChanged += DgvProducts_SelectionChanged;
+        }
+        //private void DgvProducts_CellClick(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    if (e.RowIndex >= 0)
+        //    {
+        //        // Снимаем выделение со всех строк
+        //        dgvProducts.ClearSelection();
+        //        // Выделяем строку, по которой кликнули
+        //        dgvProducts.Rows[e.RowIndex].Selected = true;
+        //        // Устанавливаем текущую ячейку
+        //        dgvProducts.CurrentCell = dgvProducts.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+        //        //wselectedGood = (SportingGood)dgvProducts.SelectedRows[0].DataBoundItem;`
+        //    }
+        //}
+        private void DgvProducts_SelectionChanged(object sender, EventArgs e)
+        {
+            //selectedGood = (SportingGood)dgvProducts.SelectedRows[0].DataBoundItem;
+            // Когда выделение меняется, обновляем selectedGood
+            if (dgvProducts.SelectedRows.Count > 0)
+            {
+                selectedGood = dgvProducts.SelectedRows[0].Tag as SportingGood;
+            }
+            else
+            {
+                selectedGood = null;
+            }
+        }
+        //private void DgvProducts_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
+        //{
+        //    // Если строка выделена, обновляем selectedGood
+        //    if (e.StateChanged == DataGridViewElementStates.Selected)
+        //    {
+        //        if (e.Row.Selected)
+        //        {
+        //            selectedGood = (SportingGood)e.Row.DataBoundItem;
+        //        }
+        //    }
+        //}
+        //private SportingGood GetSelectedGood()
+        //{
+        //    return selectedGood;
+        //}
         private void LoadProducts()
         {
             try
@@ -93,6 +155,7 @@ namespace sport
                         .Include(p => p.Manufacturer)
                         .Include(p => p.Supplier)
                         .Include(p => p.UnitsOfMeasurement)
+                        .OrderBy(p => p.Id)
                         .ToList();
 
                     dgvProducts.SuspendLayout();
@@ -102,6 +165,9 @@ namespace sport
                     {
                         int rowIndex = dgvProducts.Rows.Add();
                         var row = dgvProducts.Rows[rowIndex];
+
+                        // Сохраняем объект товара в Tag строки для удобства
+                        row.Tag = product;
                         row.Cells["colPhoto"].Value = LoadProductImage(product.AddPhotoUrlToSportingGoods);
                         row.Cells["colInfoProduct"].Value = FormatProductInfo(product);
                         row.Cells["colInfoDiscount"].Value = $"{product.Discount}%";
@@ -109,9 +175,12 @@ namespace sport
                         ApplyRowStyles(row, product);
                     }
 
-                    // Устанавливаем автоматическую высоту строк
                     dgvProducts.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                     dgvProducts.ResumeLayout();
+
+                    // Снимаем выделение после загрузки
+                    dgvProducts.ClearSelection();
+                    selectedGood = null;
                 }
             }
             catch (Exception ex)
@@ -250,7 +319,7 @@ namespace sport
 
         private void BttnOrders_Click(object sender, EventArgs e)
         {
-            if (!IsGuest)
+            if (!IsGuest.)
             {
                 Form3 ordersForm = new Form3(CurrentUser, IsGuest);
                 ordersForm.ShowDialog();
@@ -259,7 +328,123 @@ namespace sport
 
         private void BtnCreate_Click(object sender, EventArgs e)
         {
+            if (!IsGuest)
+            {
+                Form4 createForm = new Form4(CurrentUser, IsGuest);
+                createForm.ShowDialog();
+                LoadProducts();
+            }
+        }
 
+        private void BtnUpdate_Click(object sender, EventArgs e)
+        {
+            // Получаем выбранный товар
+            //SportingGood _selectedGood = (SportingGood)dgvProducts.SelectedRows[0].DataBoundItem;
+            //Int32 selectedRow = .RowIndex;
+            Console.WriteLine(dgvProducts.SelectedRows.ToString() + " | " + selectedGood);
+
+            // Проверяем, выбран ли товар
+            if (selectedGood == null)
+            {
+                MessageBox.Show("Пожалуйста, выберите товар для редактирования.\n\n" +
+                    "Для выбора товара нажмите на любую ячейку строки.",
+                    "Товар не выбран",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Проверяем права доступа
+            if (!IsGuest)
+            {
+                // Открываем форму редактирования с выбранным товаром
+                Form4 editForm = new Form4(CurrentUser, IsGuest, selectedGood);
+                editForm.ShowDialog();
+
+                // Обновляем список товаров после редактирования
+                LoadProducts();
+            }
+            else
+            {
+                MessageBox.Show("Только авторизованные пользователи могут редактировать товары.",
+                    "Доступ запрещен",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+        }
+
+        private void dgvProducts_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            //Int32 selectedRow = e.RowIndex;
+
+            //selectedGood = (SportingGood)dgvProducts.Rows[selectedRow].DataBoundItem;
+            //Console.WriteLine(selectedRow + " | " + selectedGood);
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (selectedGood == null)
+            {
+                MessageBox.Show("Пожалуйста, выберите товар для удаления.\n\n" +
+                    "Для выбора товара нажмите на любую ячейку строки.",
+                    "Товар не выбран",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Проверка прав доступа
+            if (IsGuest)
+            {
+                MessageBox.Show("Только авторизованные пользователи могут удалять товары.",
+                    "Доступ запрещен",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+            // Подтверждение удаления
+            var result = MessageBox.Show(
+                $"Вы уверены, что хотите удалить товар \"{selectedGood.Name}\"?",
+                "Подтверждение удаления",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result != DialogResult.Yes)
+                return;
+
+            try
+            {
+                using (var db = new SportingGoodsStoreContext())
+                {
+                    var good = db.SportingGoods.Find(selectedGood.Id);
+
+                    if (good == null)
+                    {
+                        MessageBox.Show("Товар не найден в базе данных.",
+                            "Ошибка",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    db.SportingGoods.Remove(good);
+                    db.SaveChanges();
+                }
+
+                MessageBox.Show("Товар успешно удалён.",
+                    "Успех",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                LoadProducts(); // обновляем список
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при удалении товара: {ex.InnerException?.Message ?? ex.Message}",
+                    "Ошибка",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

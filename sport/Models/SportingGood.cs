@@ -38,4 +38,9 @@ public partial class SportingGood
     public virtual UnitsOfMeasurement? UnitsOfMeasurement { get; set; }
 
     public virtual ICollection<OrdersSportingGood> OrdersSportingGoods { get; set; } = new List<OrdersSportingGood>();
+
+    public override string ToString()
+    {
+        return Name.ToString() + Manufacturer.ToString + Price.ToString() + Description.ToString();
+    }
 }

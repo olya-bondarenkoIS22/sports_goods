@@ -29,6 +29,7 @@ namespace sport
             colDate.FillWeight = 20;
             colDate.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
+
             var colUserDelivery = new DataGridViewTextBoxColumn();
             colUserDelivery.Name = "colUserDelivery";
             colUserDelivery.FillWeight = 50;

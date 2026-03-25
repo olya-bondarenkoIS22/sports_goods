@@ -10,4 +10,9 @@ public partial class Manufacturer
     public string Manufacturer1 { get; set; } = null!;
 
     public virtual ICollection<SportingGood> SportingGoods { get; set; } = new List<SportingGood>();
+
+    public override string ToString()
+    {
+        return Manufacturer1 ?? string.Empty;
+    }
 }

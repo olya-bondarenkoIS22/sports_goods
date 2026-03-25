@@ -10,4 +10,9 @@ public partial class UnitsOfMeasurement
     public string? UnitOfMeasurement { get; set; }
 
     public virtual ICollection<SportingGood> SportingGoods { get; set; } = new List<SportingGood>();
+
+    public override string ToString()
+    {
+        return UnitOfMeasurement ?? string.Empty;
+    }
 }

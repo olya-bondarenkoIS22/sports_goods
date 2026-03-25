@@ -66,6 +66,7 @@
             btnDelete.TabIndex = 12;
             btnDelete.Text = "Удалить товар";
             btnDelete.UseVisualStyleBackColor = false;
+            btnDelete.Click += btnDelete_Click;
             // 
             // btnUpdate
             // 
@@ -78,6 +79,7 @@
             btnUpdate.TabIndex = 11;
             btnUpdate.Text = "Редактировать товар";
             btnUpdate.UseVisualStyleBackColor = false;
+            btnUpdate.Click += BtnUpdate_Click;
             // 
             // btnCreate
             // 
@@ -145,6 +147,7 @@
             dgvProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvProducts.Size = new Size(1095, 552);
             dgvProducts.TabIndex = 1;
+            dgvProducts.CellMouseClick += dgvProducts_CellMouseClick;
             // 
             // Form2
             // 
