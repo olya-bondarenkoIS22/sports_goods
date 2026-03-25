@@ -49,7 +49,6 @@
             label10 = new Label();
             tbDescription = new TextBox();
             bttnCreate = new Button();
-            bttnReturn = new Button();
             SuspendLayout();
             // 
             // label1
@@ -230,25 +229,12 @@
             bttnCreate.UseVisualStyleBackColor = false;
             bttnCreate.Click += bttnCreate_Click;
             // 
-            // bttnReturn
-            // 
-            bttnReturn.BackColor = Color.FromArgb(233, 245, 255);
-            bttnReturn.FlatStyle = FlatStyle.Flat;
-            bttnReturn.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 204);
-            bttnReturn.Location = new Point(42, 652);
-            bttnReturn.Name = "bttnReturn";
-            bttnReturn.Size = new Size(334, 35);
-            bttnReturn.TabIndex = 21;
-            bttnReturn.Text = "Отмена";
-            bttnReturn.UseVisualStyleBackColor = false;
-            // 
             // Form4
             // 
             AutoScaleDimensions = new SizeF(11F, 22F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(248, 249, 250);
-            ClientSize = new Size(418, 700);
-            Controls.Add(bttnReturn);
+            ClientSize = new Size(418, 658);
             Controls.Add(bttnCreate);
             Controls.Add(tbDescription);
             Controls.Add(label10);
@@ -302,6 +288,5 @@
         private Label label10;
         private TextBox tbDescription;
         private Button bttnCreate;
-        private Button bttnReturn;
     }
 }

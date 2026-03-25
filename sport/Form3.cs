@@ -15,7 +15,9 @@ namespace sport
     {
         public Models.User CurrentUser { get; private set; }
         public bool IsGuest { get; private set; }
-        public Form3(Models.User user, bool quest)
+
+        private Order selectedOrder;
+        public Form3(Models.User user, bool quest, string currentRole)
         {
             InitializeComponent();
 
@@ -62,6 +64,14 @@ namespace sport
             CurrentUser = user;
             IsGuest = quest;
 
+            if (currentRole == "Менеджер")
+            {
+                btnCreate.Visible = false;
+                btnUpdate.Visible = false;
+                panel1.Visible = false;
+                dgvOrders.Dock = DockStyle.Fill;
+            }
+
             dgvOrders.Columns["colDate"].HeaderText = "Дата";
             dgvOrders.Columns["colUserDelivery"].HeaderText = "Информация";
             dgvOrders.Columns["colCode"].HeaderText = "Код";
@@ -80,6 +90,7 @@ namespace sport
                         .Include(i => i.AddressesOfPickUpPoint)
                         .Include(i => i.User)
                         .Include(i => i.Status)
+                        .OrderBy(p => p.Id)
                         //.Where(i => i.IdUser == CurrentUser.Id) // Фильтр для текущего пользователя
                         .ToList();
 
@@ -100,10 +111,11 @@ namespace sport
 
                         row.Cells["colStatus"].Value = $"{order.Status.Status1}";
                         row.Cells["colStatus"].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                        row.Tag = order;
 
                         ApplyRowStyles(row, order);
                     }
-                    
+
                     dgvOrders.ResumeLayout();
                     dgvOrders.AutoResizeRows(DataGridViewAutoSizeRowsMode.AllCells);
                 }
@@ -161,6 +173,121 @@ namespace sport
                 // Если не сработало, просто преобразуем в строку
                 return $"Дата заказа: {order.OrderDate}" + Environment.NewLine +
                        $"Дата доставки: {order.DeliveryDate}";
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            // Проверка выбранного заказа
+            if (selectedOrder == null)
+            {
+                MessageBox.Show("Пожалуйста, выберите заказ для удаления.",
+                    "Заказ не выбран",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Проверка прав
+            if (IsGuest)
+            {
+                MessageBox.Show("Только авторизованные пользователи могут удалять заказы.",
+                    "Доступ запрещен",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Подтверждение
+            var result = MessageBox.Show(
+                $"Вы уверены, что хотите удалить заказ №{selectedOrder.Id}?",
+                "Подтверждение удаления",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result != DialogResult.Yes)
+                return;
+
+            try
+            {
+                using (var db = new SportingGoodsStoreContext())
+                {
+                    var order = db.Orders.Find(selectedOrder.Id);
+
+                    if (order == null)
+                    {
+                        MessageBox.Show("Заказ не найден в базе данных.",
+                            "Ошибка",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    db.Orders.Remove(order);
+                    db.SaveChanges();
+                }
+
+                MessageBox.Show("Заказ успешно удалён.",
+                    "Успех",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                LoadOrders(); // обновляем список
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при удалении заказа: {ex.InnerException?.Message ?? ex.Message}",
+                    "Ошибка",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void dgvOrders_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvOrders.SelectedRows.Count > 0)
+                selectedOrder = dgvOrders.SelectedRows[0].Tag as Order;
+            else
+                selectedOrder = null;
+        }
+
+        private void btnCreate_Click(object sender, EventArgs e)
+        {
+            Form5 createForm = new Form5();
+            createForm.ShowDialog();
+            LoadOrders();
+
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            // Проверяем, выбран ли товар
+            if (selectedOrder == null)
+            {
+                MessageBox.Show("Пожалуйста, выберите заказ для редактирования.\n\n" +
+                    "Для выбора товара нажмите на любую ячейку строки.",
+                    "Заказ не выбран",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Проверяем права доступа
+            if (!IsGuest)
+            {
+                // Открываем форму редактирования с выбранным товаром
+                Form5 editForm = new Form5(selectedOrder);
+                editForm.ShowDialog();
+
+                // Обновляем список товаров после редактирования
+                LoadOrders();
+            }
+            else
+            {
+                MessageBox.Show("Только авторизованные пользователи могут редактировать заказы.",
+                    "Доступ запрещен",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
             }
         }
     }

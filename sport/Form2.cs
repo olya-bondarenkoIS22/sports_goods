@@ -18,6 +18,7 @@ namespace sport
         public Models.User CurrentUser { get; private set; }
         public bool IsGuest { get; private set; }
 
+        private string currentUserRole;
         private SportingGood selectedGood;
 
         public Form2(Models.User user, bool quest)
@@ -69,9 +70,17 @@ namespace sport
             CurrentUser = user;
             IsGuest = quest;
 
+            LoadRole();
+
             if (IsGuest)
             {
                 bttnOrders.Visible = false;
+                btnCreate.Visible = false;
+                btnUpdate.Visible = false;
+                btnDelete.Visible = false;
+            }
+            if (currentUserRole == "Менеджер")
+            {
                 btnCreate.Visible = false;
                 btnUpdate.Visible = false;
                 btnDelete.Visible = false;
@@ -87,9 +96,9 @@ namespace sport
 
         private void LoadRole()
         {
-            using (var db = new SportingGoodsStoreContext())
+            if (!IsGuest)
             {
-
+                currentUserRole = CurrentUser.IdRoleNavigation.Role1;
             }
         }
         private void ConfigureDgvProducts()
@@ -319,9 +328,9 @@ namespace sport
 
         private void BttnOrders_Click(object sender, EventArgs e)
         {
-            if (!IsGuest.)
+            if (!IsGuest)
             {
-                Form3 ordersForm = new Form3(CurrentUser, IsGuest);
+                Form3 ordersForm = new Form3(CurrentUser, IsGuest, currentUserRole);
                 ordersForm.ShowDialog();
             }
         }

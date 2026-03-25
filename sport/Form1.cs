@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using sport.Models;
 
 namespace sport
@@ -25,6 +26,7 @@ namespace sport
             {
                 var user = db.Users
                     .Where(w => w.Login == textBoxLogin.Text && w.Password == textBoxPassword.Text)
+                    .Include(u => u.IdRoleNavigation)
                     .FirstOrDefault();
                 if (user != null)
                 {
